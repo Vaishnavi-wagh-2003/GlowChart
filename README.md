@@ -106,11 +106,11 @@ I implemented all the asked functionality **and also added extra improvements** 
 
 | Onboarding | Login | Register |
 |------------|-------|----------|
-| ![Onboarding](docs/screenshots/onboarding.png) | ![Login](docs/screenshots/login.png) | ![Register](docs/screenshots/register.png) |
+| ![Onboarding](docs/screenshots/onboarding.jpeg) | ![Login](docs/screenshots/login.jpeg) | ![Register](docs/screenshots/register.jpeg) |
 
 | Home | Product Details | Profile |
 |------|----------------|---------|
-| ![Home](docs/screenshots/home.png) | ![Details](docs/screenshots/details1.png) | ![Details](docs/screenshots/details2.png) | ![Profile](docs/screenshots/profile.png) |
+| ![Home](docs/screenshots/home.jpeg) | ![Details](docs/screenshots/details1.jpeg) | ![Details](docs/screenshots/details2.jpeg) | ![Profile](docs/screenshots/profile.jpeg) |
 
 ---
 
