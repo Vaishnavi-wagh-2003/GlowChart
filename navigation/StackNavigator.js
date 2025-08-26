@@ -1,10 +1,10 @@
-
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Onboarding from "../screens/Onboarding";
-import Login from "../screens/Login";
-import Register from "../screens/Register";
+import Onboarding from "../screens/OnboardingScreen";
+import Login from "../screens/LoginScreen";
+import Register from "../screens/RegisterScreen";
+import BottomTabs from "./BottomTabs";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +25,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Register"
           component={Register}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Main"
+          component={BottomTabs}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
