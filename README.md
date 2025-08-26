@@ -115,7 +115,7 @@ I implemented all the asked functionality **and also added extra improvements** 
 ---
 
 ## 🎥 Screen Recording
-👉 [Watch Demo Video](docs/screenshots/demo.mp4) 
+👉 [Watch Demo Video](https://drive.google.com/file/d/1pUlWUT2cfnguA5k-0bPgWhkuz1QEEsCR/view?usp=sharing) 
 
 
 
