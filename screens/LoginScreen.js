@@ -12,17 +12,26 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Ionicons,
-  MaterialIcons,
-  AntDesign,
-  FontAwesome,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import CustomButton from "../components/CustomButton";
+import { StatusBar } from "expo-status-bar";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const { login } = useContext(UserContext);
 
   const handleLogin = async () => {
+    // Basic validation
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+
     try {
       const storedData = await AsyncStorage.getItem("userData");
       if (!storedData) {
@@ -30,25 +39,27 @@ const LoginScreen = ({ navigation }) => {
         return;
       }
 
-      const { email: storedEmail, password: storedPassword } =
-        JSON.parse(storedData);
+      const userData = JSON.parse(storedData);
+      const { email: storedEmail, password: storedPassword, fullName } = userData;
 
       if (email === storedEmail && password === storedPassword) {
-        navigation.replace("Main");
+        login({ email, fullName });
       } else {
         Alert.alert("Error", "Invalid credentials");
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong");
+      Alert.alert("Error", "Something went wrong. Please try again.");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar hidden={true} />
+
       {/* Header */}
       <View style={styles.headerBox}>
         <Text style={styles.headerText}>Hello Again!</Text>
-        <Text style={styles.subText}>Welcome back you’ve been missed.</Text>
+        <Text style={styles.subText}>Welcome back you've been missed.</Text>
       </View>
 
       {/* Email Input */}
@@ -58,20 +69,35 @@ const LoginScreen = ({ navigation }) => {
           value={email}
           onChangeText={setEmail}
           style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
-     <MaterialCommunityIcons name="email-outline" size={20} color="#999" style={styles.icon}/>
+        <MaterialCommunityIcons 
+          name="email-outline" 
+          size={20} 
+          color="#999" 
+          style={styles.icon}
+        />
       </View>
 
       {/* Password Input */}
       <View style={styles.inputBox}>
         <TextInput
           placeholder="Password"
-          secureTextEntry
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
           style={styles.input}
+          autoCapitalize="none"
         />
-        <Ionicons name="eye-off" size={20} color="#999" style={styles.icon} />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons 
+            name={showPassword ? "eye" : "eye-off"} 
+            size={20} 
+            color="#999" 
+            style={styles.icon} 
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Forgot Password */}
@@ -80,9 +106,11 @@ const LoginScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       {/* Login Button */}
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>Log In</Text>
-      </TouchableOpacity>
+      <CustomButton
+        title="Log In"
+        onPress={handleLogin}
+        style={styles.button}
+      />
 
       {/* Divider */}
       <View style={styles.divider}>
@@ -92,20 +120,28 @@ const LoginScreen = ({ navigation }) => {
       </View>
 
       {/* Social Login */}
-     <View style={styles.socialRow}>
-  <TouchableOpacity style={styles.socialBtn}>
-    <Image source={require("../assets/icons/google.png")} style={styles.socialIcon} />
-  </TouchableOpacity>
+      <View style={styles.socialRow}>
+        <TouchableOpacity style={styles.socialBtn}>
+          <Image 
+            source={require("../assets/icons/google.png")} 
+            style={styles.socialIcon} 
+          />
+        </TouchableOpacity>
 
-  <TouchableOpacity style={styles.socialBtn}>
-    <Image source={require("../assets/icons/apple.png")} style={styles.socialIcon} />
-  </TouchableOpacity>
+        <TouchableOpacity style={styles.socialBtn}>
+          <Image 
+            source={require("../assets/icons/apple.png")} 
+            style={styles.socialIcon} 
+          />
+        </TouchableOpacity>
 
-  <TouchableOpacity style={styles.socialBtn}>
-    <Image source={require("../assets/icons/facebook.png")} style={styles.socialIcon} />
-  </TouchableOpacity>
-</View>
-
+        <TouchableOpacity style={styles.socialBtn}>
+          <Image 
+            source={require("../assets/icons/facebook.png")} 
+            style={styles.socialIcon} 
+          />
+        </TouchableOpacity>
+      </View>
 
       {/* Footer */}
       <Text style={styles.footerText}>
@@ -122,22 +158,37 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFEDE8", padding: 20 },
-
+  container: { 
+    flex: 1, 
+    backgroundColor: "#FFEDE8", 
+    padding: 20 
+  },
   headerBox: {
     backgroundColor: "#F1B0B0",
     paddingVertical: 70,
-    borderBottomLeftRadius:70 ,
+    borderBottomLeftRadius: 70,
     borderBottomRightRadius: 70,
     alignItems: "center",
     marginBottom: 40,
     width: "120%", 
-    marginLeft: -35, 
-  
+    marginLeft: -35,
+    marginTop: -20, 
   },
-  headerText: { fontSize: 38, fontWeight: "800", color: "#B84953",fontFamily:"playfair-display",lineHeight:40,letterSpacing:0.8 },
-  subText: { color: "#AD7373", marginTop: 5, fontSize: 20,fontFamily:"inter-medium" },
-
+  headerText: { 
+    fontSize: 38, 
+    fontWeight: "800", 
+    color: "#B84953", 
+    fontFamily: "playfair-display", 
+    lineHeight: 40, 
+    letterSpacing: 0.8 
+  },
+  subText: { 
+    color: "#AD7373", 
+    marginTop: 5, 
+    fontSize: 20, 
+    fontFamily: "inter-medium",
+    textAlign: "center"
+  },
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -147,31 +198,38 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     elevation: 2,
   },
-  input: { flex: 1, padding: 15 },
-  icon: { marginLeft: 5 },
-
-  forgotText: { color: "#B84953", fontSize: 13 },
-
+  input: { 
+    flex: 1, 
+    padding: 15, 
+    color: "#989696" 
+  },
+  icon: { 
+    marginLeft: 5 
+  },
+  forgotText: { 
+    color: "#B84953", 
+    fontSize: 13 
+  },
   button: {
-    backgroundColor: "#B84953",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
     marginTop: 20,
     elevation: 3,
     marginBottom: 15,
   },
-  buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
-
   divider: {
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 20,
     marginBottom: 40,
   },
-  line: { flex: 1, height: 1, backgroundColor: "#6C6C6C" },
-  dividerText: { marginHorizontal: 10, color: "#6C6C6C" },
-
+  line: { 
+    flex: 1, 
+    height: 1, 
+    backgroundColor: "#6C6C6C" 
+  },
+  dividerText: { 
+    marginHorizontal: 10, 
+    color: "#6C6C6C" 
+  },
   socialRow: {
     flexDirection: "row",
     justifyContent: "center",
@@ -185,14 +243,20 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: 40,
   },
-socialIcon: {
-  width: 40,
-  height: 40,
-  resizeMode: "contain",
-},
-
-  footerText: { textAlign: "center", color: "#6C6C6C" },
-  linkText: { color: "#B84953", fontWeight: "700" },
+  socialIcon: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+  },
+  footerText: { 
+    textAlign: "center", 
+    color: "#6C6C6C",
+    fontFamily: "inter-medium"
+  },
+  linkText: { 
+    color: "#B84953", 
+    fontWeight: "700" 
+  },
 });
 
 export default LoginScreen;

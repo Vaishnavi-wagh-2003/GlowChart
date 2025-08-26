@@ -1,4 +1,5 @@
 import React from "react";
+import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -6,6 +7,11 @@ import HomeScreen from "../screens/HomeScreen";
 import OffersScreen from "../screens/OffersScreen";
 import WishlistScreen from "../screens/WishlistScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+
+// Import your PNG icons
+import HomeIcon from "../assets/icons/Home.png";
+import OffersIcon from "../assets/icons/Offer.png";
+import WishlistIcon from "../assets/icons/Wishlist.png";
 
 const Tab = createBottomTabNavigator();
 
@@ -16,21 +22,61 @@ export default function BottomTabs() {
         headerShown: false,
         tabBarShowLabel: true,
         tabBarActiveTintColor: "#B84953",
-        tabBarInactiveTintColor: "#777",
+        tabBarInactiveTintColor: "#666",
         tabBarStyle: {
           backgroundColor: "#fff",
-          height: 80,
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
-          position: "absolute",
+          height: 90,
+          borderTopWidth:1,
+          borderTopColor: "black",
+
         },
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-          if (route.name === "Home") iconName = "home";
-          else if (route.name === "Offers") iconName = "pricetags";
-          else if (route.name === "Wishlist") iconName = "heart";
-          else if (route.name === "Profile") iconName = "person";
-          return <Ionicons name={iconName} size={22} color={color} />;
+        tabBarItemStyle:{marginBottom:10},
+        tabBarIcon: ({ color, size, focused }) => {
+          if (route.name === "Home") {
+            return (
+              <Image
+                source={HomeIcon}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: color, 
+                  resizeMode: "contain",
+                }}
+              />
+            );
+          } else if (route.name === "Offers") {
+            return (
+              <Image
+                source={OffersIcon}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: color,
+                  resizeMode: "contain",
+                }}
+              />
+            );
+          } else if (route.name === "Wishlist") {
+            return (
+              <Image
+                source={WishlistIcon}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: color,
+                  resizeMode: "contain",
+                }}
+              />
+            );
+          } else if (route.name === "Profile") {
+            return (
+              <Ionicons
+                name="person-circle-outline"
+                size={26}
+                color={color}
+              />
+            );
+          }
         },
       })}
     >

@@ -7,15 +7,22 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import CustomButton from "../components/CustomButton";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const RegisterScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { login } = useContext(UserContext);
 
   const validateEmail = (email) => {
     const regex = /\S+@\S+\.\S+/;
@@ -41,19 +48,20 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      await AsyncStorage.setItem(
-        "userData",
-        JSON.stringify({ email, password })
-      );
-      Alert.alert("Success", "Account created! Please login.");
+      const userData = { fullName, email, password };
+      await AsyncStorage.setItem("userData", JSON.stringify(userData));
+      //login(userData);
       navigation.replace("Login");
+      // Navigation to home screen is handled by the UserContext login function
     } catch (error) {
-      Alert.alert("Error", "Something went wrong");
+      Alert.alert("Error", "Failed to save user data");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar hidden={true} />
+
       {/* Header */}
       <View style={styles.headerBox}>
         <Text style={styles.headerText}>Join The Glow!</Text>
@@ -78,35 +86,58 @@ const RegisterScreen = ({ navigation }) => {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        <MaterialIcons name="email" size={20} color="#999" style={styles.icon} />
+        <MaterialCommunityIcons
+          name="email-outline"
+          size={20}
+          color="#999"
+          style={styles.icon}
+        />
       </View>
 
       <View style={styles.inputBox}>
         <TextInput
           placeholder="Password"
-          secureTextEntry
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
           style={styles.input}
         />
-        <Ionicons name="eye-off" size={20} color="#999" style={styles.icon} />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons
+            name={showPassword ? "eye" : "eye-off"}
+            size={20}
+            color="#999"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.inputBox}>
         <TextInput
           placeholder="Confirm Password"
-          secureTextEntry
+          secureTextEntry={!showConfirmPassword}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           style={styles.input}
         />
-        <Ionicons name="eye-off" size={20} color="#999" style={styles.icon} />
+        <TouchableOpacity
+          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+        >
+          <Ionicons
+            name={showConfirmPassword ? "eye" : "eye-off"}
+            size={20}
+            color="#999"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Button */}
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Create Account</Text>
-      </TouchableOpacity>
+      <CustomButton
+        title="Create Account"
+        onPress={handleRegister}
+        style={styles.button}
+      />
 
       {/* Footer */}
       <Text style={styles.footerText}>
@@ -124,41 +155,47 @@ const RegisterScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFEDE8", padding: 20 },
-
   headerBox: {
     backgroundColor: "#F1B0B0",
-    padding: 40,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    paddingVertical: 55,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
     alignItems: "center",
-    marginBottom: 30,
-    width: "100%",
+    marginBottom: 60,
+    width: "120%",
+    alignSelf: "center",
+    marginTop: -20,
   },
-  headerText: { fontSize: 22, fontWeight: "700", color: "#822E2E" },
-
+  headerText: {
+    fontSize: 30,
+    fontWeight: "700",
+    color: "#B84953",
+    fontFamily: "Playfair Display",
+    textAlign: "center",
+  },
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: 20,
     elevation: 2,
   },
-  input: { flex: 1, padding: 12 },
+  input: { flex: 1, padding: 15, color: "#989696" },
   icon: { marginLeft: 5 },
-
   button: {
-    backgroundColor: "#B84953",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 15,
+    marginTop: 20,
     elevation: 3,
+    marginBottom: 80,
   },
-  buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
-
-  footerText: { textAlign: "center", marginTop: 20, color: "#444" },
+  footerText: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#6C6C6C",
+    fontFamily: "inter-medium",
+    marginTop: 80,
+  },
   linkText: { color: "#B84953", fontWeight: "700" },
 });
 

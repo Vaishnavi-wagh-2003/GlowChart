@@ -1,20 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import StackNavigator from './navigation/StackNavigator';
+import React from "react";
+import { ProductProvider } from "./context/ProductContext";
+import { UserProvider } from "./context/UserContext";
+import StackNavigator from "./navigation/StackNavigator"; // ✅ use your separate stack navigator
 
 export default function App() {
   return (
-   <>
-   <StackNavigator/>
-   </>
+    <UserProvider>
+      <ProductProvider>
+        <StackNavigator /> 
+      </ProductProvider>
+    </UserProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
