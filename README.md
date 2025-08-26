@@ -108,9 +108,9 @@ I implemented all the asked functionality **and also added extra improvements** 
 |------------|-------|----------|
 | ![Onboarding](docs/screenshots/onboarding.jpeg) | ![Login](docs/screenshots/login.jpeg) | ![Register](docs/screenshots/register.jpeg) |
 
-| Home | Product Details | Profile |
+| Home | Product Details |Product Details| Profile |
 |------|----------------|---------|
-| ![Home](docs/screenshots/home.jpeg) | ![Details](docs/screenshots/details1.jpeg) | ![Details](docs/screenshots/details2.jpeg) | ![Profile](docs/screenshots/profile.jpeg) |
+| ![Home](docs/screenshots/home.jpeg) | ![Details](docs/screenshots/details1.jpeg)| ![Details](docs/screenshots/details2.jpeg) | ![Profile](docs/screenshots/profile.jpeg) |
 
 ---
 
