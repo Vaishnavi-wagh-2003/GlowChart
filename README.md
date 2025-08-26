@@ -115,7 +115,7 @@ I implemented all the asked functionality **and also added extra improvements** 
 ---
 
 ## 🎥 Screen Recording
-👉 [Watch Demo Video]((docs/screenshots/demo.gif))  
+👉 [Watch Demo Video]((docs/screenshots/demo.mp4))  
 or add a GIF preview inside repo:
 
 
