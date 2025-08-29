@@ -7,10 +7,11 @@ import {
   Text,
   Image,
 } from "react-native";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import notificationIcon from "../assets/icons/notification.png";
 import bagIcon from "../assets/icons/bag.png";
-const Header = () => {
+
+const Header = ({ searchQuery, onSearchChange }) => {
   return (
     <View style={styles.container}>
       {/* Logo */}
@@ -24,7 +25,6 @@ const Header = () => {
             style={{
               width: 24,
               height: 24,
-
               resizeMode: "contain",
             }}
           />
@@ -35,17 +35,21 @@ const Header = () => {
             style={{
               width: 24,
               height: 24,
-
               resizeMode: "contain",
             }}
           />
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
+      {/* Search Bar - Connected via props */}
       <View style={styles.searchBox}>
         <Ionicons name="search" size={20} color="#777" />
-        <TextInput placeholder="Search for all products" style={styles.input} />
+        <TextInput
+          placeholder="Search for all products"
+          style={styles.input}
+          value={searchQuery}
+          onChangeText={onSearchChange}
+        />
       </View>
     </View>
   );
@@ -83,8 +87,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 10,
     height: 45,
-    borderColor:"#8F8F8F",
-    borderWidth:0.5
+    borderColor: "#8F8F8F",
+    borderWidth: 0.5
   },
   input: { flex: 1, marginLeft: 8 },
 });

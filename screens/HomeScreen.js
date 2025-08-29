@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -22,6 +22,15 @@ const HomeScreen = () => {
   const { products, loading } = useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [wishlist, setWishlist] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery) return products;
+    return products.filter((product) =>
+      product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
 
   const toggleWishlist = (id) => {
     if (wishlist.includes(id)) {
@@ -33,14 +42,21 @@ const HomeScreen = () => {
 
   if (loading) {
     return (
-      <ActivityIndicator size="large" color="#B84953" style={{ flex: 1 }} />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#B84953" />
+      </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden={true}  />
-      <Header />
+      <StatusBar hidden={true} />
+      
+      {/* Header with search functionality */}
+      <Header 
+        searchQuery={searchQuery} 
+        onSearchChange={setSearchQuery} 
+      />
 
       {/* Section Header */}
       <View style={styles.productsHeader}>
@@ -51,11 +67,11 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.countText}>{products.length} products</Text>
+      <Text style={styles.countText}>{filteredProducts.length} products</Text>
 
       {/* Product Grid */}
       <FlatList
-        data={products}
+        data={filteredProducts}
         renderItem={({ item }) => (
           <ProductCard
             item={item}
@@ -66,7 +82,15 @@ const HomeScreen = () => {
         )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
-        contentContainerStyle={{ paddingBottom: 10 }}
+        contentContainerStyle={styles.flatListContent}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No products found</Text>
+            <Text style={styles.emptySubText}>
+              Try adjusting your search terms
+            </Text>
+          </View>
+        }
       />
 
       {/* Product Detail Modal */}
@@ -74,6 +98,7 @@ const HomeScreen = () => {
         visible={!!selectedProduct}
         animationType="slide"
         onRequestClose={() => setSelectedProduct(null)}
+        transparent={false}
       >
         {selectedProduct && (
           <ScrollView style={styles.modalContainer}>
@@ -152,42 +177,40 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
 
-          
-           {/* Highlights */}
-<View style={styles.section}>
-  <Text style={styles.sectionTitle}>Highlights</Text>
-  <View style={styles.highlightsRow}>
-    {/* Left Column */}
-    <View style={styles.highlightCol}>
-      <Text style={styles.highlightLabel}>Width</Text>
-      <Text style={styles.highlightValue}>
-        {selectedProduct.dimensions.width}
-      </Text>
+            {/* Highlights */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Highlights</Text>
+              <View style={styles.highlightsRow}>
+                {/* Left Column */}
+                <View style={styles.highlightCol}>
+                  <Text style={styles.highlightLabel}>Width</Text>
+                  <Text style={styles.highlightValue}>
+                    {selectedProduct.dimensions?.width || "N/A"}
+                  </Text>
 
-      <Text style={styles.highlightLabel}>Warranty</Text>
-      <Text style={styles.highlightValue}>
-        {selectedProduct.warrantyInformation}
-      </Text>
-    </View>
+                  <Text style={styles.highlightLabel}>Warranty</Text>
+                  <Text style={styles.highlightValue}>
+                    {selectedProduct.warrantyInformation || "N/A"}
+                  </Text>
+                </View>
 
-    {/* Divider */}
-    <View style={styles.dividerVertical} />
+                {/* Divider */}
+                <View style={styles.dividerVertical} />
 
-    {/* Right Column */}
-    <View style={styles.highlightCol}>
-      <Text style={styles.highlightLabel}>Height</Text>
-      <Text style={styles.highlightValue}>
-        {selectedProduct.dimensions.height}
-      </Text>
+                {/* Right Column */}
+                <View style={styles.highlightCol}>
+                  <Text style={styles.highlightLabel}>Height</Text>
+                  <Text style={styles.highlightValue}>
+                    {selectedProduct.dimensions?.height || "N/A"}
+                  </Text>
 
-      <Text style={styles.highlightLabel}>Shipping</Text>
-      <Text style={styles.highlightValue}>
-        {selectedProduct.shippingInformation}
-      </Text>
-    </View>
-  </View>
-</View>
-
+                  <Text style={styles.highlightLabel}>Shipping</Text>
+                  <Text style={styles.highlightValue}>
+                    {selectedProduct.shippingInformation || "N/A"}
+                  </Text>
+                </View>
+              </View>
+            </View>
 
             {/* Ratings & Reviews */}
             <View style={styles.section}>
@@ -223,7 +246,13 @@ const HomeScreen = () => {
               ))}
             </View>
 
-           
+            {/* Close Button */}
+            <TouchableOpacity
+              style={styles.closeBtn}
+              onPress={() => setSelectedProduct(null)}
+            >
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
           </ScrollView>
         )}
       </Modal>
@@ -233,6 +262,11 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFEDE8" },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   productsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -251,8 +285,26 @@ const styles = StyleSheet.create({
   },
   filterText: { fontSize: 14, fontWeight: "500" },
   countText: { marginLeft: 20, color: "#777", marginBottom: 10 },
+  flatListContent: { paddingBottom: 10 },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#777",
+    marginBottom: 8,
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: "#999",
+    textAlign: "center",
+  },
 
-  /* Modal */
+  /* Modal Styles */
   modalContainer: { flex: 1, padding: 20, backgroundColor: "#FFEDE8" },
   imageWrapper: {
     backgroundColor: "#fde6eb",
@@ -277,7 +329,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
   },
-
   topIconLeft: {
     position: "absolute",
     top: 10,
@@ -295,7 +346,6 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   iconImage: { width: 20, height: 20, resizeMode: "contain" },
-
   actionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -310,15 +360,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   similarText: { color: "#B84953", fontWeight: "600" },
-
   modalTitle: { fontSize: 22, fontWeight: "700", marginTop: 5 },
   modalDesc: { fontSize: 13, color: "#333", marginVertical: 5 },
-  modalBrand: { fontSize: 15, color: "#777", marginBottom: 5,color:"#333333" },
-
+  modalBrand: { fontSize: 15, color: "#333333", marginBottom: 5 },
   ratingRow: { flexDirection: "row", alignItems: "center", marginVertical: 8 },
   ratingText: { marginLeft: 6, fontSize: 14, color: "#444" },
   divider: { height: 1, backgroundColor: "#ddd", marginVertical: 8 },
-
   priceRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -338,43 +385,35 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   addBtnText: { color: "#fff", fontWeight: "600" },
-
   section: { marginTop: 15 },
   sectionTitle: { fontSize: 20, fontWeight: "700", marginBottom: 10 },
   highlightsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: 10,
+    backgroundColor: "#FFEDE8",
+    padding: 10,
+    borderRadius: 8,
   },
-  highlightItem: { fontSize: 13, color: "#333", marginBottom: 5 },
-highlightsRow: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  marginTop: 10,
-  backgroundColor: "#FFEDE8",
-  padding: 10,
-  borderRadius: 8,
-},
-highlightCol: {
-  flex: 1,
-},
-dividerVertical: {
-  width: 1,
-  backgroundColor: "#ccc",
-  marginHorizontal: 12,
-},
-highlightLabel: {
-  fontSize: 13,
-  fontWeight: "600",
-  color: "#000",
-  marginBottom: 2,
-},
-highlightValue: {
-  fontSize: 13,
-  color: "#333",
-  marginBottom: 10,
-},
-
+  highlightCol: {
+    flex: 1,
+  },
+  dividerVertical: {
+    width: 1,
+    backgroundColor: "#ccc",
+    marginHorizontal: 12,
+  },
+  highlightLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#000",
+    marginBottom: 2,
+  },
+  highlightValue: {
+    fontSize: 13,
+    color: "#333",
+    marginBottom: 10,
+  },
   reviewBox: {
     backgroundColor: "#fff",
     padding: 12,
@@ -388,7 +427,6 @@ highlightValue: {
   reviewer: { fontWeight: "600", fontSize: 14 },
   reviewerEmail: { fontSize: 11, color: "#777" },
   comment: { fontSize: 13, color: "#444" },
-
   closeBtn: {
     marginTop: 20,
     alignItems: "center",
