@@ -103,25 +103,25 @@ I implemented all the asked functionality **and also added extra improvements** 
 ## 📸 Screenshots
 
 ### Onboarding  
-![Onboarding](docs/screenshots/onboarding.jpeg)
+<img src="docs/screenshots/onboarding.jpeg" width="300"/>
 
 ### Login  
-![Login](docs/screenshots/login.jpeg)
+<img src="docs/screenshots/login.jpeg" width="300"/>
 
 ### Register  
-![Register](docs/screenshots/register.jpeg)
+<img src="docs/screenshots/register.jpeg" width="300"/>
 
 ### Home  
-![Home](docs/screenshots/home.jpeg)
+<img src="docs/screenshots/home.jpeg" width="300"/>
 
 ### Product Details (View 1)  
-![Details](docs/screenshots/details1.jpeg)
+<img src="docs/screenshots/details1.jpeg" width="300"/>
 
 ### Product Details (View 2)  
-![Details](docs/screenshots/details2.jpeg)
+<img src="docs/screenshots/details2.jpeg" width="300"/>
 
 ### Profile  
-![Profile](docs/screenshots/profile.jpeg)
+<img src="docs/screenshots/profile.jpeg" width="300"/>
 
 ---
 
